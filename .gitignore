@@ -35,6 +35,8 @@
 
 otel-cpp-starter/.DS_Store
 
+otel-cpp-starter/build
+
 otel-cpp-starter/oatpp/
 
 otel-cpp-starter/opentelemetry-cpp/

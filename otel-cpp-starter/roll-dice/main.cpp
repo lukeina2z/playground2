@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <cassert>
 
 using namespace std;
 namespace trace_api = opentelemetry::trace;

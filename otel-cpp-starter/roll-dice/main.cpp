@@ -13,6 +13,7 @@
 #include <ctime>
 #include <string>
 #include <cassert>
+#include <chrono>
 
 using namespace std;
 namespace trace_api = opentelemetry::trace;
@@ -28,6 +29,7 @@ namespace {
     //set the global trace provider
     trace_api::Provider::SetTracerProvider(provider);
   }
+
   void CleanupTracer() {
     std::shared_ptr<opentelemetry::trace::TracerProvider> none;
     trace_api::Provider::SetTracerProvider(none);
@@ -50,6 +52,17 @@ public:
   }
 };
 
+bool Within17Seconds(const std::chrono::time_point<std::chrono::system_clock>& inputTime) {
+    // Get the current time point
+    auto currentTime = std::chrono::system_clock::now();
+
+    // Calculate the difference in seconds
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - inputTime);
+
+    // Check if the input time is at least 100 seconds earlier
+    return duration.count() < 17;
+}
+
 void run() {
   auto router = oatpp::web::server::HttpRouter::createShared();
   router->route("GET", "/rolldice", std::make_shared<Handler>());
@@ -57,8 +70,16 @@ void run() {
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared({"localhost", 8080, oatpp::network::Address::IP_4});
   oatpp::network::Server server(connectionProvider, connectionHandler);
   OATPP_LOGI("Dice Server", "Server running on port %s", static_cast<const char*>(connectionProvider->getProperty("port").getData()));
-  server.run();
+
+  auto startTime = std::chrono::system_clock::now();
+  auto fn = [startTime]()->bool {
+    auto currentTime = std::chrono::system_clock::now();
+    return Within17Seconds(startTime);
+  };
+
+  server.run(fn);
 }
+
 
 int main() {
   oatpp::base::Environment::init();

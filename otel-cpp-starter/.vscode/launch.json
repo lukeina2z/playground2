@@ -18,6 +18,9 @@
                 "loadAll": true,
                 "exceptionList": ""
             },
+            "sourceFileMap": {
+                "/Users/lukezha/github/otel-cpp-starter": "/Users/lukezha/github/priv1/otel-cpp-starter"
+            },
             "MIMode": "lldb"
         }
 

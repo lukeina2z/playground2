@@ -33,4 +33,4 @@ process.on('SIGTERM', () => {
 });
 
 
-
+sdk.shutdown();

@@ -12,8 +12,16 @@
                 "debug"
             ],
             "runtimeExecutable": "npm",
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-node/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js"
+            ],
+            "sourceMapPathOverrides": {
+                // "../../src/sdk.ts": "../../../opentelemetry-js/experimental/packages/opentelemetry-sdk-node/src/sdk.ts",
+                // "../../../src/export/ConsoleSpanExporter.ts": "../opentelemetry-js/packages/opentelemetry-sdk-trace-base/src/export/ConsoleSpanExporter.ts"
+            },
             "skipFiles": [
-                "<node_internals>/**"
+                "node_modules/**"
             ],
             "type": "node"
         },
@@ -21,10 +29,22 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
+            "smartStep": true,
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
             ],
-            "program": "${workspaceFolder}/noOp.js"
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-node/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js"
+            ],
+            "sourceMapPathOverrides": {
+                // "../../src/sdk.ts": "../../../opentelemetry-js/experimental/packages/opentelemetry-sdk-node/src/sdk.ts",
+                // "../../../src/export/ConsoleSpanExporter.ts": "../opentelemetry-js/packages/opentelemetry-sdk-trace-base/src/export/ConsoleSpanExporter.ts"
+            },
+            "skipFiles": [
+                "node_modules/**"
+            ],
+            "program": "${workspaceFolder}/tracing.js"
         }
     ]
 }

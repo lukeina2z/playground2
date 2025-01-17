@@ -1,0 +1,50 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch via npm",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "runtimeExecutable": "npm",
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-node/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js"
+            ],
+            "sourceMapPathOverrides": {
+                // "../../src/sdk.ts": "../../../opentelemetry-js/experimental/packages/opentelemetry-sdk-node/src/sdk.ts",
+                // "../../../src/export/ConsoleSpanExporter.ts": "../opentelemetry-js/packages/opentelemetry-sdk-trace-base/src/export/ConsoleSpanExporter.ts"
+            },
+            "skipFiles": [
+                "node_modules/**"
+            ],
+            "type": "node"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "smartStep": true,
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-node/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js"
+            ],
+            "sourceMapPathOverrides": {
+                // "../../src/sdk.ts": "../../../opentelemetry-js/experimental/packages/opentelemetry-sdk-node/src/sdk.ts",
+                // "../../../src/export/ConsoleSpanExporter.ts": "../opentelemetry-js/packages/opentelemetry-sdk-trace-base/src/export/ConsoleSpanExporter.ts"
+            },
+            "skipFiles": [
+                "node_modules/**"
+            ],
+            "program": "${workspaceFolder}/tracing.js"
+        }
+    ]
+}

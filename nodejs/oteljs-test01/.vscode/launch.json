@@ -33,14 +33,19 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Node a file",
             "smartStep": true,
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ],
             "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/auto-instrumentations-node/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/instrumentation/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/resources/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-logs/**/*.js",
                 "${workspaceFolder}/node_modules/@opentelemetry/sdk-node/**/*.js",
-                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js"
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-base/**/*.js",
+                "${workspaceFolder}/node_modules/@opentelemetry/sdk-trace-node/**/*.js"
             ],
             "sourceMapPathOverrides": {
                 // "../../src/sdk.ts": "../../../opentelemetry-js/experimental/packages/opentelemetry-sdk-node/src/sdk.ts",
@@ -49,7 +54,7 @@
             "skipFiles": [
                 "node_modules/**"
             ],
-            "program": "${workspaceFolder}/tracing.js"
+            "program": "${workspaceFolder}/trace2.js"
         }
     ]
 }

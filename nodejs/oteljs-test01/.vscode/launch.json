@@ -13,6 +13,7 @@
             ],
             "runtimeExecutable": "npm",
             "resolveSourceMapLocations": [
+                "${workspaceFolder}/node_modules/@opentelemetry/auto-instrumentations-node/**/*.js",
                 "${workspaceFolder}/node_modules/@opentelemetry/instrumentation/**/*.js",
                 "${workspaceFolder}/node_modules/@opentelemetry/resources/**/*.js",
                 "${workspaceFolder}/node_modules/@opentelemetry/sdk-logs/**/*.js",

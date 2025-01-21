@@ -54,7 +54,7 @@
             "skipFiles": [
                 "node_modules/**"
             ],
-            "program": "${workspaceFolder}/trace2.js"
+            "program": "${workspaceFolder}/rolldice.js"
         }
     ]
 }

@@ -12,6 +12,7 @@
                 "rolldice"
             ],
             "runtimeExecutable": "npm",
+            "console": "integratedTerminal",
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/node_modules/@opentelemetry/api/**/*.js",
                 "${workspaceFolder}/node_modules/@opentelemetry/auto-instrumentations-node/**/*.js",

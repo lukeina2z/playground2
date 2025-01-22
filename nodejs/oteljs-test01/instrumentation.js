@@ -28,3 +28,18 @@ const sdk = new NodeSDK({
 sdk.start();
 
 
+async function shutdown() {
+    try {
+        await sdk.shutdown();
+        diag.debug('OpenTelemetry SDK terminated');
+    } catch (error) {
+        diag.error('Error terminating OpenTelemetry SDK', error);
+    }
+}
+
+// Gracefully shutdown SDK if a SIGTERM is received
+process.on('SIGTERM', shutdown);
+
+// Gracefully shutdown SDK if Node.js is exiting normally
+process.once('beforeExit', shutdown);
+

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "debug": "node tracing.js",
+    "rolldice": "node --require ./instrumentation.js rolldice.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

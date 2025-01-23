@@ -7,23 +7,31 @@ https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspne
 
 dotnet dev-certs https --trust
 
-
 dotnet run --launch-profile https
 
-http://localhost:5116/swagger/index.html
 
-http://localhost:5116/weatherforecast
+
+docker build --no-cache -t todo-img-01 .
+
+docker run -d -p 8090:80 --name MyToDoApp todo-img-01
+
+
+
+
+http://localhost:8080/swagger/index.html
+
+http://localhost:8080/weatherforecast
 
 curl -X 'GET' \
-  'http://localhost:5116/WeatherForecast' \
+  'http://localhost:8080/WeatherForecast' \
   -H 'accept: text/plain'
 
 curl -X 'GET' \
-  'http://localhost:5116/api/TodoItems' \
+  'http://localhost:8080/api/TodoItems' \
   -H 'accept: text/plain'
 
 curl -X 'POST' \
-  'http://localhost:5116/api/TodoItems' \
+  'http://localhost:8080/api/TodoItems' \
   -H 'accept: text/plain' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -32,11 +40,11 @@ curl -X 'POST' \
 }'
 
 curl -X 'GET' \
-  'http://localhost:5116/api/TodoItems/2' \
+  'http://localhost:8080/api/TodoItems/2' \
   -H 'accept: text/plain'
 
 curl -X 'PUT' \
-  'http://localhost:5116/api/TodoItems/1' \
+  'http://localhost:8080/api/TodoItems/1' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -46,5 +54,5 @@ curl -X 'PUT' \
 }'
 
 curl -X 'DELETE' \
-  'http://localhost:5116/api/TodoItems/1' \
+  'http://localhost:8080/api/TodoItems/1' \
   -H 'accept: */*'

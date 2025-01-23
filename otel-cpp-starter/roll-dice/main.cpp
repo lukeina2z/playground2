@@ -37,7 +37,7 @@ namespace {
 
 }
 
-class Handler : public oatpp::web::server::HttpRequestHandler {
+class GameHandler : public oatpp::web::server::HttpRequestHandler {
 public:
   shared_ptr<OutgoingResponse> handle(const shared_ptr<IncomingRequest>& request) override {
     auto tracer = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer("my-app-tracer");
@@ -60,12 +60,12 @@ bool Within17Seconds(const std::chrono::time_point<std::chrono::system_clock>& i
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - inputTime);
 
     // Check if the input time is at least 100 seconds earlier
-    return duration.count() < 17;
+    return duration.count() < 1700;
 }
 
 void run() {
   auto router = oatpp::web::server::HttpRouter::createShared();
-  router->route("GET", "/rolldice", std::make_shared<Handler>());
+  router->route("GET", "/rolldice", std::make_shared<GameHandler>());
   auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared({"localhost", 8080, oatpp::network::Address::IP_4});
   oatpp::network::Server server(connectionProvider, connectionHandler);

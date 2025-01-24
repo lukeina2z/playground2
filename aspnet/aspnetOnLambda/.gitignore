@@ -1,4 +1,9 @@
+
+.vs/
+src/aspnetOnLambda/bin/
 src/aspnetOnLambda/obj/
+src/aspnetOnLambda/Properties/
+
 test/aspnetOnLambda.Tests/bin/
 test/aspnetOnLambda.Tests/obj/
-
+test/aspnetOnLambda.Tests/Properties/

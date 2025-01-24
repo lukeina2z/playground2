@@ -1,0 +1,4 @@
+src/aspnetOnLambda/obj/
+test/aspnetOnLambda.Tests/bin/
+test/aspnetOnLambda.Tests/obj/
+

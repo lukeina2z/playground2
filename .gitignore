@@ -1,3 +1,6 @@
+*.csproj.user
+
+
 # Prerequisites
 *.d
 

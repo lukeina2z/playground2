@@ -14,10 +14,12 @@ namespace TodoApi.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly TodoContext _context;
+        private readonly ILogger<TodoItemsController> _logger;
 
-        public TodoItemsController(TodoContext context)
+        public TodoItemsController(TodoContext context, ILogger<TodoItemsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/TodoItems

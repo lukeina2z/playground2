@@ -1,3 +1,8 @@
+using Amazon.Lambda.Core;
+
+using OpenTelemetry.Trace;
+using OpenTelemetry.Instrumentation.AWSLambda;
+
 namespace aspnetOnLambda;
 
 /// <summary>
@@ -21,6 +26,20 @@ public class LambdaEntryPoint :
 
     Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFunction
 {
+
+    private static TracerProvider tracerProvider = OpenTelemetry.Sdk.CreateTracerProviderBuilder()
+        // add other instrumentations
+        .AddAWSLambdaConfigurations(options => options.DisableAwsXRayContextExtraction = true)
+        .Build();
+
+    public override async Task<Amazon.Lambda.APIGatewayEvents.APIGatewayProxyResponse> FunctionHandlerAsync(
+        Amazon.Lambda.APIGatewayEvents.APIGatewayProxyRequest request,
+        ILambdaContext lambdaContext)
+    {
+        var retVal = await OpenTelemetry.Instrumentation.AWSLambda.AWSLambdaWrapper.TraceAsync(tracerProvider, base.FunctionHandlerAsync, request, lambdaContext);
+        return retVal;
+    }
+
     /// <summary>
     /// The builder has configuration, logging and Amazon API Gateway already configured. The startup class
     /// needs to be configured in this method using the UseStartup<>() method.

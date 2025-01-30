@@ -17,23 +17,48 @@ public class AwsCallController : ControllerBase
     public string OutgoingHttp()
     {
         _ = this.httpClient.GetAsync("https://aws.amazon.com").Result;
-
         return this.GetTraceId();
     }
 
     [HttpGet]
     [Route("/aws-sdk-call")]
-    public async System.Threading.Tasks.Task<IActionResult> AWSSDKCall()
+    public string AwsSdkCall()
+    {
+        _ = this.s3Client.ListBucketsAsync().Result;
+        return this.GetTraceId();
+    }
+
+    [HttpGet]
+    [Route("/aws-sdk-call2")]
+    public async System.Threading.Tasks.Task<IActionResult> AWSSDKCall2()
     {
         try
         {
             string retVal = this.GetTraceId();
-            retVal += "\n\n";
-            var result = await this.s3Client.ListBucketsAsync();
-            foreach (var bucket in result.Buckets)
+
+            var tracer = LambdaEntryPoint.tracerProvider.GetTracer("my-app-x");
+            // Create a span
+            using (var span = tracer.StartSpan("ExampleSpan"))
             {
-                retVal += bucket.BucketName;
+                Console.WriteLine("Span is being executed...");
+
+                // Optionally, add attributes to the span
+                span.SetAttribute("my-attribute", "value");
+
+                // Simulate work being done
+                // System.Threading.Thread.Sleep(1000); // Simulate some work
+
+                retVal = this.GetTraceId();
                 retVal += "\n\n";
+                var result = await this.s3Client.ListBucketsAsync();
+                foreach (var bucket in result.Buckets)
+                {
+                    retVal += bucket.BucketName;
+                    retVal += "\n\n";
+                }
+
+                // Optionally, add events to the span
+                span.AddEvent("Span completed");
             }
 
             // Return the response

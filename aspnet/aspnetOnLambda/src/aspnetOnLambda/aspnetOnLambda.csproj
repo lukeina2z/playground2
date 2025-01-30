@@ -14,6 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.3" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.412.5" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AWS" Version="1.11.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AWSLambda" Version="1.11.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
   </ItemGroup>
 </Project>

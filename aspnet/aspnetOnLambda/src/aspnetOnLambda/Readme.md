@@ -66,4 +66,11 @@ Deploy application
 ```
     cd "aspnetOnLambda/src/aspnetOnLambda"
     dotnet lambda deploy-serverless
+
+    rm -rf ./myaspnet-pub
+    dotnet publish aspnetOnLambda.csproj --runtime linux-x64 -c Release -o myaspnet-pub
+    zip -r ~/mypack10.zip .
+
 ```
+
+

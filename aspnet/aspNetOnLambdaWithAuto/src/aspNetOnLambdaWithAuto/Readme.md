@@ -66,4 +66,11 @@ Deploy application
 ```
     cd "aspNetOnLambdaWithAuto/src/aspNetOnLambdaWithAuto"
     dotnet lambda deploy-serverless
+
+    rm -rf ./aspnetauto-pub
+
+    dotnet publish aspNetOnLambdaWithAuto.csproj --runtime linux-x64 -c Release -o aspnetauto-pub
+
+    zip -r ~/aspnetauto-01.zip .
+
 ```

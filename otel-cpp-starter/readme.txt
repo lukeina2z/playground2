@@ -1,0 +1,21 @@
+
+
+To build OTel Cpp library
+=========================
+1. Console with admin permission.  
+    Because a dependency nlohmann want to create a sufolder in a system folder.  C:\Program Files\opentelemetry-cpp\include\nlohmann.
+2.   cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF  
+        ###  -DBUILD_SHARED_LIBS=ON  
+
+3.   cmake --build build --config Debug
+
+     cmake --build build --config Debug  -DBUILD_SHARED_LIBS=ON
+
+4.  cmake --install . --prefix ..\..\otel-cpp --config Debug
+
+
+
+
+
+
+

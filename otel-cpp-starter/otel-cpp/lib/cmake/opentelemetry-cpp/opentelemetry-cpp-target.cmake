@@ -19,7 +19,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_cmake_targets_defined "")
 set(_cmake_targets_not_defined "")
 set(_cmake_expected_targets "")
-foreach(_cmake_expected_target IN ITEMS opentelemetry-cpp::api opentelemetry-cpp::sdk opentelemetry-cpp::common opentelemetry-cpp::trace opentelemetry-cpp::metrics opentelemetry-cpp::logs opentelemetry-cpp::version opentelemetry-cpp::resources opentelemetry-cpp::ext opentelemetry-cpp::ostream_span_exporter opentelemetry-cpp::ostream_metrics_exporter opentelemetry-cpp::ostream_log_record_exporter opentelemetry-cpp::in_memory_span_exporter opentelemetry-cpp::in_memory_metric_exporter)
+foreach(_cmake_expected_target IN ITEMS opentelemetry-cpp::api opentelemetry-cpp::sdk opentelemetry-cpp::common opentelemetry-cpp::trace opentelemetry-cpp::metrics opentelemetry-cpp::logs opentelemetry-cpp::version opentelemetry-cpp::resources opentelemetry-cpp::ext opentelemetry-cpp::ostream_span_exporter opentelemetry-cpp::ostream_metrics_exporter opentelemetry-cpp::ostream_log_record_exporter opentelemetry-cpp::in_memory_span_exporter opentelemetry-cpp::in_memory_metric_exporter opentelemetry-cpp::etw_exporter)
   list(APPEND _cmake_expected_targets "${_cmake_expected_target}")
   if(TARGET "${_cmake_expected_target}")
     list(APPEND _cmake_targets_defined "${_cmake_expected_target}")
@@ -59,9 +59,8 @@ endif()
 add_library(opentelemetry-cpp::api INTERFACE IMPORTED)
 
 set_target_properties(opentelemetry-cpp::api PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "OPENTELEMETRY_ABI_VERSION_NO=1"
+  INTERFACE_COMPILE_DEFINITIONS "HAVE_MSGPACK;OPENTELEMETRY_ABI_VERSION_NO=1"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "-framework CoreFoundation"
 )
 
 # Create imported target opentelemetry-cpp::sdk
@@ -156,6 +155,14 @@ add_library(opentelemetry-cpp::in_memory_metric_exporter STATIC IMPORTED)
 set_target_properties(opentelemetry-cpp::in_memory_metric_exporter PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
   INTERFACE_LINK_LIBRARIES "opentelemetry-cpp::metrics"
+)
+
+# Create imported target opentelemetry-cpp::etw_exporter
+add_library(opentelemetry-cpp::etw_exporter INTERFACE IMPORTED)
+
+set_target_properties(opentelemetry-cpp::etw_exporter PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
+  INTERFACE_LINK_LIBRARIES "opentelemetry-cpp::api;opentelemetry-cpp::trace;nlohmann_json::nlohmann_json;opentelemetry-cpp::logs"
 )
 
 # Load information for each installed configuration.

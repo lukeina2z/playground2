@@ -16,6 +16,15 @@ To build OTel Cpp library
 
 
 
+To build OTel Cpp library [Mac]
+==============================
+1.   cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF -DCMAKE_CXX_STANDARD=17
+2. cd build.
+3. cmake --build .
+4.  cmake --install . --prefix ../../otel-cpp
+
+
+
 
 
 

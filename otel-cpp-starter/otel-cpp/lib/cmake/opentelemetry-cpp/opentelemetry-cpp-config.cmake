@@ -62,7 +62,7 @@ set(OPENTELEMETRY_ABI_VERSION_NO
     "1"
     CACHE STRING "opentelemetry-cpp ABI version" FORCE)
 set(OPENTELEMETRY_VERSION
-    "1.18.0"
+    "1.19.0"
     CACHE STRING "opentelemetry-cpp version" FORCE)
 
 

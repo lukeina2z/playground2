@@ -8,12 +8,15 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string serviceName = "roll-dice";
+const string serviceName = "roll-dice-service";
+const string serviceVer = "1.1.0.0";
 
 builder.Logging.AddOpenTelemetry(options =>
     {
         options.SetResourceBuilder(
-                OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(serviceName))
+                OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(
+                    serviceName: serviceName,
+                    serviceVersion: serviceVer))
             .AddConsoleExporter();
     });
 

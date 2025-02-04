@@ -8,8 +8,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-//...
-
 var serviceName = "MyServiceName";
 var serviceVersion = "1.0.0";
 
@@ -35,7 +33,6 @@ var loggerFactory = LoggerFactory.Create(builder =>
     });
 });
 
-//...
 Console.WriteLine("Hello, World!");
 
 

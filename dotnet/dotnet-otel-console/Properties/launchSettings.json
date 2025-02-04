@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dotnet-otel-console": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

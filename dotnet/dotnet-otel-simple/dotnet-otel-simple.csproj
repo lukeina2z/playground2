@@ -7,4 +7,10 @@
     <RootNamespace>dotnet_otel_simple</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.0" />
+  </ItemGroup>
+
 </Project>

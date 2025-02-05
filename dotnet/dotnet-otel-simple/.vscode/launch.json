@@ -5,6 +5,33 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": ".NET Core Launch (web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/bin/Debug/net8.0/dotnet-otel-simple.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/rolldice?rolls=7"
+      },
+      "justMyCode": false,
+      "enableStepFiltering": false,
+      "symbolOptions": {
+        "searchPaths": ["D://symbols"],
+        "searchMicrosoftSymbolServer": true,
+        "searchNuGetOrgSymbolServer": false
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+      }
+    },    
+    {
       "name": "C#: dotnet-otel-simple [http]",
       "type": "dotnet",
       "request": "launch",

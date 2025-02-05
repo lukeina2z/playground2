@@ -29,6 +29,7 @@ builder.Services.AddOpenTelemetry()
           .AddAspNetCoreInstrumentation()
           .AddConsoleExporter());
 
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -39,27 +40,6 @@ app.MapGet("/", () =>
     return s1 + s2;
 });
 
-app.MapGet("/rolldice/{player?}", HandleRollDice);
-
-string HandleRollDice([FromServices]ILogger<Program> logger, string? player)
-{
-    var result = RollDice();
-
-    if (string.IsNullOrEmpty(player))
-    {
-        logger.LogInformation("Anonymous player is rolling the dice: {result}", result);
-    }
-    else
-    {
-        logger.LogInformation("{player} is rolling the dice: {result}", player, result);
-    }
-
-    return result.ToString(CultureInfo.InvariantCulture);
-}
-
-int RollDice()
-{
-    return Random.Shared.Next(1, 7);
-}
+app.MapControllers();
 
 app.Run();

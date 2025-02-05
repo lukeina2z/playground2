@@ -16,6 +16,25 @@ public class Dice
 
     public List<int> rollTheDice(int rolls)
     {
+        {
+            using var activityParentOne = activitySource.StartActivity("parnet-one");
+            using var activityParentTwo = activitySource.StartActivity("parnet-two");
+            using var activityParentThree = activitySource.StartActivity("parnet-three");
+            var links = new List<ActivityLink>
+                {
+                    new ActivityLink(activityParentOne.Context),
+                    new ActivityLink(activityParentTwo.Context),
+                    new ActivityLink(activityParentThree.Context)
+                };
+
+            using var activity = activitySource.StartActivity(
+                ActivityKind.Internal,
+                name: "activity-with-links",
+                links: links);
+
+        }
+
+
         List<int> results = new List<int>();
 
         // It is recommended to create activities, only when doing operations that are worth measuring independently.

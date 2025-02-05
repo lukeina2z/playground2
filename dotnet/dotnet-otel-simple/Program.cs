@@ -13,22 +13,22 @@ builder.Services.AddSingleton<Instrumentation>();
 const string serviceName = "OTel-AspNet-Svc";
 const string serviceVer = "1.1.0.0";
 
-builder.Logging.AddOpenTelemetry(options =>
-   {
-        options.SetResourceBuilder(
-        OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(
-                serviceName: serviceName,
-                serviceVersion: serviceVer))
-            .AddOtlpExporter()
-            .AddConsoleExporter();
-   });
+// builder.Logging.AddOpenTelemetry(options =>
+//    {
+//         options.SetResourceBuilder(
+//         OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(
+//                 serviceName: serviceName,
+//                 serviceVersion: serviceVer))
+//             .AddOtlpExporter()
+//             .AddConsoleExporter();
+//    });
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(serviceName))
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter()
-        .AddConsoleExporter())
+    // .WithMetrics(metrics => metrics
+    //     .AddAspNetCoreInstrumentation()
+    //     .AddOtlpExporter()
+    //     .AddConsoleExporter())
     .WithTracing(tracing => tracing
         .AddSource(Instrumentation.ActivitySourceName)
         .SetSampler(new AlwaysOnSampler())

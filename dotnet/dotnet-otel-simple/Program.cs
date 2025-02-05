@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Net.Http;
+
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,8 @@ const string serviceVer = "1.1.0.0";
 //             .AddConsoleExporter();
 //    });
 
+const string LocalCollectorUrl = "http://localhost:4318";
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(serviceName))
     // .WithMetrics(metrics => metrics
@@ -34,7 +39,12 @@ builder.Services.AddOpenTelemetry()
         .SetSampler(new AlwaysOnSampler())
         .AddHttpClientInstrumentation()
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter()
+        // .AddOtlpExporter()
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(LocalCollectorUrl + "/v1/traces");
+            options.Protocol = OtlpExportProtocol.HttpProtobuf;
+        })
         .AddConsoleExporter());
 
 

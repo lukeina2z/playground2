@@ -1,6 +1,4 @@
-using System.Globalization;
 
-using Microsoft.AspNetCore.Mvc;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -8,26 +6,32 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string serviceName = "roll-dice-service";
-const string serviceVer = "1.1.0.0";
+const string serviceName = "OTel-Test-Svc";
+//const string serviceVer = "1.1.0.0";
 
-builder.Logging.AddOpenTelemetry(options =>
-    {
-        options.SetResourceBuilder(
-                OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(
-                    serviceName: serviceName,
-                    serviceVersion: serviceVer))
-            .AddConsoleExporter();
-    });
+//builder.Logging.AddOpenTelemetry(options =>
+//    {
+//        options.SetResourceBuilder(
+//                OpenTelemetry.Resources.ResourceBuilder.CreateDefault().AddService(
+//                    serviceName: serviceName,
+//                    serviceVersion: serviceVer))
+//            .AddConsoleExporter();
+//    });
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(serviceName))
     .WithTracing(tracing => tracing
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter())
-    .WithMetrics(metrics => metrics
+            .AddSource(Instrumentation.ActivitySourceName)
+            .SetSampler(new AlwaysOnSampler())
+            .AddHttpClientInstrumentation()
           .AddAspNetCoreInstrumentation()
           .AddConsoleExporter());
+    //.WithMetrics(metrics => metrics
+    //      .AddAspNetCoreInstrumentation()
+    //      .AddConsoleExporter());
+
+// Register the Instrumentation class as a singleton in the DI container.
+builder.Services.AddSingleton<Instrumentation>();
 
 builder.Services.AddControllers();
 

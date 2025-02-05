@@ -1,24 +1,34 @@
+using System.Diagnostics;
+
 public class Dice
 {
     private int min;
     private int max;
 
-    public Dice(int min, int max)
+    private ActivitySource activitySource;
+
+    public Dice(int min, int max,  ActivitySource activitySource)
     {
         this.min = min;
         this.max = max;
+        this.activitySource = activitySource;
     }
 
     public List<int> rollTheDice(int rolls)
     {
         List<int> results = new List<int>();
 
-        for (int i = 0; i < rolls; i++)
+        // It is recommended to create activities, only when doing operations that are worth measuring independently.
+        // Too many activities makes it harder to visualize in tools like Jaeger.
+        using (var myActivity = activitySource.StartActivity("rollTheDice"))
         {
-            results.Add(rollOnce());
-        }
+            for (int i = 0; i < rolls; i++)
+            {
+                results.Add(rollOnce());
+            }
 
-        return results;
+            return results;
+        }
     }
 
     private int rollOnce()

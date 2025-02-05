@@ -11,7 +11,7 @@ docker run --rm  -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
 
 docker run --rm --name jaeger \
     --name jaeger \
-    --network jaeger-network \
+    --network p5Network \
     -e COLLECTOR_ZIPKIN_HTTP_HTTP_PORT=9411 \
     -e JAEGER_LOG_LEVEL=debug \
     -p 9411:9411 \

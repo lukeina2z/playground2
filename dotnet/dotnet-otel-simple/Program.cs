@@ -25,17 +25,18 @@ builder.Logging.AddOpenTelemetry(options =>
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(serviceName))
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddOtlpExporter()
+        .AddConsoleExporter())
     .WithTracing(tracing => tracing
         .AddSource(Instrumentation.ActivitySourceName)
         .SetSampler(new AlwaysOnSampler())
         .AddHttpClientInstrumentation()
         .AddAspNetCoreInstrumentation()
         .AddOtlpExporter()
-        .AddConsoleExporter())
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter()
         .AddConsoleExporter());
+
 
 builder.Services.AddControllers();
 

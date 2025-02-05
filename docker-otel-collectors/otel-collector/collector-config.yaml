@@ -6,17 +6,22 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
 exporters:
-  otlphttp/jaeger: # Jaeger supports OTLP directly. The default port for OTLP/gRPC is 4317
-    endpoint: http://jaeger:14318
+  otlp/jaeger: # Jaeger supports OTLP directly. The default port for OTLP/gRPC is 4317
+    endpoint: http://jaeger:14317
     tls:
       insecure: true
+  # otlphttp/jaeger: # Jaeger supports OTLP directly. The default port for OTLP/HTTP is 4318
+  #   endpoint: http://jaeger:14318
+  #   tls:
+  #     insecure: true
   debug:
     verbosity: detailed
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [debug, otlphttp/jaeger]
+      exporters: [debug, otlp/jaeger]
+      # exporters: [debug, otlphttp/jaeger]
     metrics:
       receivers: [otlp]
       exporters: [debug]

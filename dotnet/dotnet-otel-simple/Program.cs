@@ -6,7 +6,10 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string serviceName = "OTel-Test-Svc";
+// Register the Instrumentation class as a singleton in the DI container.
+builder.Services.AddSingleton<Instrumentation>();
+
+const string serviceName = "OTel-AspNet-Svc";
 //const string serviceVer = "1.1.0.0";
 
 //builder.Logging.AddOpenTelemetry(options =>
@@ -21,17 +24,14 @@ const string serviceName = "OTel-Test-Svc";
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(serviceName))
     .WithTracing(tracing => tracing
-            .AddSource(Instrumentation.ActivitySourceName)
-            .SetSampler(new AlwaysOnSampler())
-            .AddHttpClientInstrumentation()
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter());
+        .AddSource(Instrumentation.ActivitySourceName)
+        .SetSampler(new AlwaysOnSampler())
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddConsoleExporter());
     //.WithMetrics(metrics => metrics
     //      .AddAspNetCoreInstrumentation()
     //      .AddConsoleExporter());
-
-// Register the Instrumentation class as a singleton in the DI container.
-builder.Services.AddSingleton<Instrumentation>();
 
 builder.Services.AddControllers();
 

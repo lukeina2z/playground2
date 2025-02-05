@@ -6,7 +6,7 @@ using System.Diagnostics;
 /// </summary>
 public class Instrumentation : IDisposable
 {
-    internal const string ActivitySourceName = "roll-dice";
+    internal const string ActivitySourceName = "P5.RollDice";
     // internal const string ActivitySourceVersion = "1.0.0";
 
     public Instrumentation()

@@ -45,6 +45,10 @@ builder.Services.AddOpenTelemetry()
             options.Endpoint = new Uri(LocalCollectorUrl + "/v1/traces");
             options.Protocol = OtlpExportProtocol.HttpProtobuf;
         })
+        .AddZipkinExporter(options =>
+        {
+            options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+        })
         .AddConsoleExporter());
 
 

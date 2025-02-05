@@ -1,4 +1,6 @@
 
+using System.Diagnostics;
+using System.Net.Http;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -10,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<Instrumentation>();
 
 const string serviceName = "OTel-AspNet-Svc";
-//const string serviceVer = "1.1.0.0";
+const string serviceVer = "1.1.0.0";
 
 //builder.Logging.AddOpenTelemetry(options =>
 //    {
@@ -42,6 +44,23 @@ app.MapGet("/", () =>
     string s1 = "Hello World!";
     string s2 = " Hello again!!!";
     return s1 + s2;
+});
+
+var httpClient = new HttpClient();
+
+app.MapGet("/pingaws", async () =>
+{
+    Instrumentation instru = new Instrumentation();
+    using var activityParentOne = instru.ActivitySource.StartActivity("ping AWS");
+    var html = await httpClient.GetStringAsync("https://aws.amazon.com/");
+    if (string.IsNullOrWhiteSpace(html))
+    {
+        return "Hello, World!";
+    }
+    else
+    {
+        return html;
+    }
 });
 
 app.MapControllers();

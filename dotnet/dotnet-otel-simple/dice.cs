@@ -22,10 +22,20 @@ public class Dice
         // Too many activities makes it harder to visualize in tools like Jaeger.
         using (var myActivity = activitySource.StartActivity("rollTheDice"))
         {
+            myActivity?.AddEvent(new("Init rolling dice"));
+
             for (int i = 0; i < rolls; i++)
             {
                 results.Add(rollOnce());
             }
+
+            var eventTags = new ActivityTagsCollection
+            {
+                { "operation", "calculate-pi" },
+                { "result", 3.14159 }
+            };
+
+            myActivity?.AddEvent(new("End rolling dice", DateTimeOffset.Now, eventTags));
 
             return results;
         }
@@ -33,6 +43,9 @@ public class Dice
 
     private int rollOnce()
     {
-        return Random.Shared.Next(min, max + 1);
+        using var myActivity = activitySource.StartActivity("roll the dice once");
+        var result = Random.Shared.Next(min, max + 1);
+        myActivity?.SetTag("dicelib.rolled", result);
+        return result;
     }
 }

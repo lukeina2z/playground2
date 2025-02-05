@@ -18,7 +18,7 @@ public class DiceController : ControllerBase
     [HttpGet("/rolldice")]
     public List<int> RollDice(string player, int? rolls)
     {
-        using var scope = this.logger.BeginScope("{Id}", Guid.NewGuid().ToString("N"));
+        /// using var scope = this.logger.BeginScope("{Id}", Guid.NewGuid().ToString("N"));
         using var activity = this.activitySource.StartActivity("RollDice-Web-Method");
 
 

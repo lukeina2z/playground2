@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'javaproj01.App'
+    mainClass = 'app.src.main.java.javaproj01.App'
 }
 
 tasks.named('test') {

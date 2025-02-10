@@ -5,7 +5,7 @@ package proj02;
 
 public class App {
     public String getGreeting() {
-        return "Hello World!";
+        return "Hello World from project 02!";
     }
 
     public static void main(String[] args) {

@@ -24,7 +24,6 @@ else()
     message(STATUS "Building on an unknown platform")
 endif()
 
-
 if (NOT OATPP_LIB)
   message(SEND_ERROR "Did not find oatpp library ${OATPP_ROOT}/build/src")
 endif()
@@ -32,22 +31,47 @@ endif()
 # set the path to the directory containing "oatpp" package configuration files
 include_directories(${OATPP_ROOT}/src)
 
-set(opentelemetry-cpp_DIR ../otel-cpp/lib/cmake/opentelemetry-cpp)
+# set(opentelemetry-cpp_DIR ../otel-cpp/lib/cmake/opentelemetry-cpp)
 
 # Use find_package to include OpenTelemetry C++
-find_package(opentelemetry-cpp CONFIG REQUIRED NO_DEFAULT_PATH)
+# find_package(opentelemetry-cpp CONFIG REQUIRED NO_DEFAULT_PATH)
 
-if(WIN32)
-    set(nlohmann_json_DIR ../otel-cpp/share/cmake/nlohmann_json)
-    find_package(nlohmann_json CONFIG REQUIRED NO_DEFAULT_PATH)
+set(OPENTELEMETRY_ROOT ../opentelemetry-cpp)
 
-    # Link against each OpenTelemetry C++ library
-    target_link_libraries(dice-server PRIVATE
-                          ${OATPP_LIB}
-                          Ws2_32.lib
-                          ${OPENTELEMETRY_CPP_LIBRARIES})
+include_directories(${OPENTELEMETRY_ROOT}/api/include)
+include_directories(${OPENTELEMETRY_ROOT}/sdk/include)
+include_directories(${OPENTELEMETRY_ROOT}/sdk/src)
+include_directories(${OPENTELEMETRY_ROOT}/exporters/ostream/include)
+
+find_library(OPENTELEMETRY_COMMON_LIB NAMES libopentelemetry_common.a HINTS "${OPENTELEMETRY_ROOT}/bld101/sdk/src/common" NO_DEFAULT_PATH)
+find_library(OPENTELEMETRY_TRACE_LIB NAMES libopentelemetry_trace.a HINTS "${OPENTELEMETRY_ROOT}/bld101/sdk/src/trace" NO_DEFAULT_PATH)
+find_library(OPENTELEMETRY_EXPORTER_LIB NAMES libopentelemetry_exporter_ostream_span.a HINTS "${OPENTELEMETRY_ROOT}/bld101/exporters/ostream" NO_DEFAULT_PATH)
+find_library(OPENTELEMETRY_RESOURCE_LIB NAMES libopentelemetry_resources.a HINTS "${OPENTELEMETRY_ROOT}/bld101/sdk/src/resource" NO_DEFAULT_PATH)
+
+if(OPENTELEMETRY_COMMON_LIB AND OPENTELEMETRY_TRACE_LIB AND OPENTELEMETRY_EXPORTER_LIB AND OPENTELEMETRY_RESOURCE_LIB)
+  message(STATUS "Found opentelemetry libraries")
 else()
-    target_link_libraries(dice-server PRIVATE
-                          ${OATPP_LIB}
-                          ${OPENTELEMETRY_CPP_LIBRARIES})
+  message(SEND_ERROR "Did not find opentelemetry libraries")
 endif()
+
+target_link_libraries(dice-server PRIVATE 
+                        ${OATPP_LIB}
+                        ${OPENTELEMETRY_COMMON_LIB}
+                        ${OPENTELEMETRY_TRACE_LIB}
+                        ${OPENTELEMETRY_EXPORTER_LIB}
+                        ${OPENTELEMETRY_RESOURCE_LIB})
+
+# if(WIN32)
+#     set(nlohmann_json_DIR ../otel-cpp/share/cmake/nlohmann_json)
+#     find_package(nlohmann_json CONFIG REQUIRED NO_DEFAULT_PATH)
+
+#     # Link against each OpenTelemetry C++ library
+#     target_link_libraries(dice-server PRIVATE
+#                           ${OATPP_LIB}
+#                           Ws2_32.lib
+#                           ${OPENTELEMETRY_CPP_LIBRARIES})
+# else()
+#     target_link_libraries(dice-server PRIVATE
+#                           ${OATPP_LIB}
+#                           ${OPENTELEMETRY_CPP_LIBRARIES})
+# endif()

@@ -13,7 +13,7 @@ To build OTel Cpp library
 
 4.  cmake --install . --prefix ..\..\otel-cpp --config Debug
 
-5. Copy everything under "C:\Program Files\opentelemetry-cpp" to "otel-cpp".
+5. Copy everything under "C:\Program Files\opentelemetry-cpp" to "otel-cpp". (Because of nlohmann_json issue.)
 
 
 To build OTel Cpp library [Mac]

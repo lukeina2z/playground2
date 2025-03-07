@@ -15,12 +15,20 @@
 #include <cassert>
 #include <chrono>
 
+#include <thread>
+
 using namespace std;
 namespace trace_api = opentelemetry::trace;
 namespace trace_sdk = opentelemetry::sdk::trace;
 namespace trace_exporter = opentelemetry::exporter::trace;
 
 namespace {
+    const std::string TracerName("my-app-tracer");
+    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> GetTracer() {
+        auto retVal = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer("my-app-tracer");
+        return retVal;
+    }
+
   void InitTracer() {
     auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
     auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
@@ -39,17 +47,17 @@ namespace {
 
 class GameHandler : public oatpp::web::server::HttpRequestHandler {
 public:
-  shared_ptr<OutgoingResponse> handle(const shared_ptr<IncomingRequest>& request) override {
-    auto tracer = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer("my-app-tracer");
-    auto span = tracer->StartSpan("RollDiceServer");
-    int low = 100;
-    int high = 700;
-    int random = rand() % (high - low) + low;
-    // Convert a std::string to oatpp::String
-    const string response = to_string(random);
-    span->End();
-    return ResponseFactory::createResponse(Status::CODE_200, response.c_str());
-  }
+    shared_ptr<OutgoingResponse> handle(const shared_ptr<IncomingRequest>& request) override {
+        auto tracer = GetTracer();
+        auto span = tracer->StartSpan("RollDiceServer");
+        int low = 100;
+        int high = 700;
+        int random = rand() % (high - low) + low;
+        // Convert a std::string to oatpp::String
+        const string response = to_string(random);
+        span->End();
+        return ResponseFactory::createResponse(Status::CODE_200, response.c_str());
+    }
 };
 
 bool Within17Seconds(const std::chrono::time_point<std::chrono::system_clock>& inputTime) {
@@ -60,10 +68,12 @@ bool Within17Seconds(const std::chrono::time_point<std::chrono::system_clock>& i
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - inputTime);
 
     // Check if the input time is at least 100 seconds earlier
-    return duration.count() < 1700;
+    return duration.count() < 17;
 }
 
 void run() {
+    auto tracer = GetTracer();
+    auto span = tracer->StartSpan("Run-Web-Server");
   auto router = oatpp::web::server::HttpRouter::createShared();
   router->route("GET", "/rolldice", std::make_shared<GameHandler>());
   auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
@@ -78,15 +88,21 @@ void run() {
   };
 
   server.run(fn);
+  server.stop();
 }
 
 
 int main() {
   oatpp::base::Environment::init();
   InitTracer();
+  auto tracer = GetTracer();
+  auto span = tracer->StartSpan("Main-Fn");
   srand((int)time(0));
   run();
-  oatpp::base::Environment::destroy();
+
+  span->End();
   CleanupTracer();
+  // oatpp::base::Environment::destroy();
+  std::this_thread::sleep_for(std::chrono::seconds(3));
   return 0;
 }

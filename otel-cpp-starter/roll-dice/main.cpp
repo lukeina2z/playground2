@@ -1,21 +1,28 @@
-#include "oatpp/web/server/HttpConnectionHandler.hpp"
-#include "oatpp/network/Server.hpp"
-#include "oatpp/network/tcp/server/ConnectionProvider.hpp"
-
-#include "opentelemetry/exporters/ostream/span_exporter_factory.h"
-#include "opentelemetry/sdk/trace/exporter.h"
-#include "opentelemetry/sdk/trace/processor.h"
-#include "opentelemetry/sdk/trace/simple_processor_factory.h"
-#include "opentelemetry/sdk/trace/tracer_provider_factory.h"
-#include "opentelemetry/trace/provider.h"
-
 #include <cstdlib>
 #include <ctime>
 #include <string>
 #include <cassert>
 #include <chrono>
-
 #include <thread>
+
+#include "oatpp/web/server/HttpConnectionHandler.hpp"
+#include "oatpp/network/Server.hpp"
+#include "oatpp/network/tcp/server/ConnectionProvider.hpp"
+
+#include "opentelemetry/trace/provider.h"
+
+#include "opentelemetry/sdk/trace/batch_span_processor_factory.h"
+#include "opentelemetry/sdk/trace/batch_span_processor_options.h"
+#include "opentelemetry/sdk/trace/exporter.h"
+#include "opentelemetry/sdk/trace/processor.h"
+#include "opentelemetry/sdk/trace/simple_processor_factory.h"
+#include "opentelemetry/sdk/trace/tracer_provider.h"
+#include "opentelemetry/sdk/trace/tracer_provider_factory.h"
+
+#include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
+#include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
+
 
 using namespace std;
 namespace trace_api = opentelemetry::trace;
@@ -30,11 +37,19 @@ namespace {
     }
 
   void InitTracer() {
-    auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
-    auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
-    std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
-      trace_sdk::TracerProviderFactory::Create(std::move(processor));
+    // auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
+    // auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
+    // std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
+    //   trace_sdk::TracerProviderFactory::Create(std::move(processor));
     //set the global trace provider
+    // trace_api::Provider::SetTracerProvider(provider);
+
+    trace_sdk::BatchSpanProcessorOptions bspOpts{};
+    opentelemetry::exporter::otlp::OtlpHttpExporterOptions opts;
+    opts.url = "http://localhost:4318/v1/traces";
+    auto exporter = opentelemetry::exporter::otlp::OtlpHttpExporterFactory::Create(opts);
+    auto processor = trace_sdk::BatchSpanProcessorFactory::Create(std::move(exporter), bspOpts);
+    std::shared_ptr<trace_api::TracerProvider> provider = trace_sdk::TracerProviderFactory::Create(std::move(processor));
     trace_api::Provider::SetTracerProvider(provider);
   }
 

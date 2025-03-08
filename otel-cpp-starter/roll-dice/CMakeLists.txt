@@ -99,23 +99,26 @@ if(WIN32)
     #                       Ws2_32.lib
     #                       ${OPENTELEMETRY_CPP_LIBRARIES})
 else()
-    find_library(OPENTELEMETRY_COMMON_LIB NAMES libopentelemetry_common.a HINTS "${OPENTELEMETRY_ROOT}/build/sdk/src/common" NO_DEFAULT_PATH)
-    find_library(OPENTELEMETRY_TRACE_LIB NAMES libopentelemetry_trace.a HINTS "${OPENTELEMETRY_ROOT}/build/sdk/src/trace" NO_DEFAULT_PATH)
-    find_library(OPENTELEMETRY_EXPORTER_LIB NAMES libopentelemetry_exporter_ostream_span.a HINTS "${OPENTELEMETRY_ROOT}/build/exporters/ostream" NO_DEFAULT_PATH)
-    find_library(OPENTELEMETRY_RESOURCE_LIB NAMES libopentelemetry_resources.a HINTS "${OPENTELEMETRY_ROOT}/build/sdk/src/resource" NO_DEFAULT_PATH)
+        # Use find_package to include OpenTelemetry C++
+        set(opentelemetry-cpp_DIR ../otel-cpp-pkg/lib/cmake/opentelemetry-cpp)
+        # find_package(opentelemetry-cpp CONFIG REQUIRED NO_DEFAULT_PATH)
 
-    if(OPENTELEMETRY_COMMON_LIB AND OPENTELEMETRY_TRACE_LIB AND OPENTELEMETRY_EXPORTER_LIB AND OPENTELEMETRY_RESOURCE_LIB)
-      message(STATUS "Found opentelemetry libraries")
-    else()
-      message(SEND_ERROR "Did not find opentelemetry libraries")
-    endif()
+        find_package(opentelemetry-cpp CONFIG REQUIRED NO_DEFAULT_PATH
+        PATHS ../otel-cpp-pkg/lib/cmake/opentelemetry-cpp
+        NO_CMAKE_SYSTEM_PATH)
 
-    target_link_libraries(dice-server PRIVATE 
-                            ${OATPP_LIB}
-                            ${OPENTELEMETRY_COMMON_LIB}
-                            ${OPENTELEMETRY_TRACE_LIB}
-                            ${OPENTELEMETRY_EXPORTER_LIB}
-                            ${OPENTELEMETRY_RESOURCE_LIB})
+
+    find_package(Protobuf REQUIRED)
+    # find_package(gRPC REQUIRED)
+    find_package(CURL REQUIRED)
+    find_package(nlohmann_json REQUIRED)
+
+    target_include_directories(dice-server PRIVATE
+                                ${OPENTELEMETRY_CPP_INCLUDE_DIRS})
+
+    target_link_libraries(dice-server PRIVATE
+                          ${OATPP_LIB}
+                          ${OPENTELEMETRY_CPP_LIBRARIES})
 endif()
 
 

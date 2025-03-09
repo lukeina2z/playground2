@@ -10,6 +10,7 @@ set(project_name roll-dice-server)
 # Define your project's source files
 set(SOURCES
     main.cpp  # Add your source files here
+    DiceServer.cpp
 )
 
 # Create an executable target

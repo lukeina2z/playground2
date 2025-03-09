@@ -5,6 +5,8 @@
 #include <chrono>
 #include <thread>
 
+#include "DiceServer.h"
+
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
 #include "oatpp/network/Server.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
@@ -23,7 +25,6 @@
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
 
-
 using namespace std;
 namespace trace_api = opentelemetry::trace;
 namespace trace_sdk = opentelemetry::sdk::trace;
@@ -36,7 +37,7 @@ namespace {
         return retVal;
     }
 
-  void InitTracer() {
+  void InitTracer(const opentelemetry::exporter::otlp::OtlpHttpExporterOptions& opts) {
     // auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
     // auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
     // std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
@@ -45,8 +46,8 @@ namespace {
     // trace_api::Provider::SetTracerProvider(provider);
 
     trace_sdk::BatchSpanProcessorOptions bspOpts{};
-    opentelemetry::exporter::otlp::OtlpHttpExporterOptions opts;
-    opts.url = "http://localhost:4318/v1/traces";
+    // opentelemetry::exporter::otlp::OtlpHttpExporterOptions opts;
+    // opts.url = "http://localhost:4318/v1/traces";
     auto exporter = opentelemetry::exporter::otlp::OtlpHttpExporterFactory::Create(opts);
     auto processor = trace_sdk::BatchSpanProcessorFactory::Create(std::move(exporter), bspOpts);
     std::shared_ptr<trace_api::TracerProvider> provider = trace_sdk::TracerProviderFactory::Create(std::move(processor));
@@ -102,14 +103,15 @@ void run() {
     return Within17Seconds(startTime);
   };
 
-  server.run(fn);
+  server.run();
+  // server.run(fn);
   server.stop();
 }
 
 
-int main() {
+int mainDiceServer(const opentelemetry::exporter::otlp::OtlpHttpExporterOptions& opts) {
   oatpp::base::Environment::init();
-  InitTracer();
+  InitTracer(opts);
   auto tracer = GetTracer();
   auto span = tracer->StartSpan("Main-Fn");
   srand((int)time(0));

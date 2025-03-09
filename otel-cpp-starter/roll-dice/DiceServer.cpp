@@ -29,7 +29,6 @@
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
 
-using namespace std;
 namespace trace_api = opentelemetry::trace;
 namespace trace_sdk = opentelemetry::sdk::trace;
 namespace trace_exporter = opentelemetry::exporter::trace;
@@ -39,7 +38,7 @@ namespace
     const std::string TracerName("my-app-tracer");
     opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> GetTracer()
     {
-        auto retVal = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer("my-app-tracer");
+        auto retVal = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer(TracerName);
         return retVal;
     }
 
@@ -49,17 +48,12 @@ namespace
         namespace otlp_exporter = opentelemetry::exporter::otlp;
         namespace ostream_exporter = opentelemetry::exporter::trace;
 
-        // Create Console (OStream) Exporter
         auto console_exporter = std::make_unique<ostream_exporter::OStreamSpanExporter>();
-
-        // Create OTLP HTTP Exporter
-        auto otlp_http_exporter = std::make_unique<otlp_exporter::OtlpHttpExporter>(opts);
-
-        // Create Span Processors
         auto console_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(console_exporter));
+
+        auto otlp_http_exporter = std::make_unique<otlp_exporter::OtlpHttpExporter>(opts);
         auto otlp_http_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(otlp_http_exporter));
 
-        // Use MultiSpanProcessor to combine both exporters
         std::vector<std::unique_ptr<trace_sdk::SpanProcessor>> processors;
         processors.emplace_back(std::move(console_processor));
         processors.emplace_back(std::move(otlp_http_processor));
@@ -80,7 +74,7 @@ namespace
 class GameHandler : public oatpp::web::server::HttpRequestHandler
 {
 public:
-    shared_ptr<OutgoingResponse> handle(const shared_ptr<IncomingRequest> &request) override
+    std::shared_ptr<OutgoingResponse> handle(const std::shared_ptr<IncomingRequest> &request) override
     {
         auto tracer = GetTracer();
         auto span = tracer->StartSpan("RollDiceServer");
@@ -88,7 +82,7 @@ public:
         int high = 700;
         int random = rand() % (high - low) + low;
         // Convert a std::string to oatpp::String
-        const string response = to_string(random);
+        const std::string response = std::to_string(random);
         span->End();
         return ResponseFactory::createResponse(Status::CODE_200, response.c_str());
     }

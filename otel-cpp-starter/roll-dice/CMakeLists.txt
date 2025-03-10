@@ -11,6 +11,7 @@ set(project_name roll-dice-server)
 set(SOURCES
     main.cpp  # Add your source files here
     DiceServer.cpp
+    xtrace.cpp
 )
 
 # Create an executable target

@@ -4,6 +4,7 @@
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
 
 #include "DiceServer.h"
+#include "xtrace.h"
 
 /*
   Usage:
@@ -18,13 +19,12 @@ int main(int argc, char *argv[])
 {
     namespace otlp = opentelemetry::exporter::otlp;
     opentelemetry::exporter::otlp::OtlpHttpExporterOptions opts;
-
     if (argc > 1)
     {
         opts.url = argv[1];
         if (argc > 2)
         {
-            std::string debug  = argv[2];
+            std::string debug = argv[2];
             opts.console_debug = debug != "" && debug != "0" && debug != "no";
         }
 
@@ -43,7 +43,19 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    XTrace::InitTracer(opts);
+    auto tracer = XTrace::GetTracer();
+    auto span = tracer->StartSpan("Main-Fn");
+    auto scope = tracer->WithActiveSpan(span);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     mainDiceServer(opts);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    span->End();
+    XTrace::CleanupTracer();
+
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     // if (opts.console_debug)
     // {

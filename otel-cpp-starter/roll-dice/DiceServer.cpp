@@ -6,78 +6,25 @@
 #include <thread>
 
 #include "DiceServer.h"
+#include "xtrace.h"
 
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
 #include "oatpp/network/Server.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 
-#include "opentelemetry/trace/provider.h"
-#include "opentelemetry/sdk/trace/tracer_provider.h"
-#include "opentelemetry/sdk/trace/tracer_provider_factory.h"
-
-#include "opentelemetry/sdk/trace/processor.h"
-#include "opentelemetry/sdk/trace/batch_span_processor_factory.h"
-#include "opentelemetry/sdk/trace/batch_span_processor_options.h"
-#include <opentelemetry/sdk/trace/multi_span_processor.h>
-#include <opentelemetry/sdk/trace/simple_processor.h>
-#include "opentelemetry/sdk/trace/simple_processor_factory.h"
-
-#include "opentelemetry/sdk/trace/exporter.h"
-#include <opentelemetry/exporters/otlp/otlp_http_exporter.h>
-#include <opentelemetry/exporters/ostream/span_exporter.h>
-#include "opentelemetry/exporters/ostream/span_exporter_factory.h"
-#include "opentelemetry/exporters/otlp/otlp_http_exporter_factory.h"
-#include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
-
 namespace trace_api = opentelemetry::trace;
 namespace trace_sdk = opentelemetry::sdk::trace;
 namespace trace_exporter = opentelemetry::exporter::trace;
-
-namespace
-{
-    const std::string TracerName("my-app-tracer");
-    opentelemetry::v1::nostd::shared_ptr<opentelemetry::v1::trace::Tracer> GetTracer()
-    {
-        auto retVal = opentelemetry::trace::Provider::GetTracerProvider()->GetTracer(TracerName);
-        return retVal;
-    }
-
-    void InitTracer(const opentelemetry::exporter::otlp::OtlpHttpExporterOptions &opts)
-    {
-        namespace trace_sdk = opentelemetry::sdk::trace;
-        namespace otlp_exporter = opentelemetry::exporter::otlp;
-        namespace ostream_exporter = opentelemetry::exporter::trace;
-
-        auto console_exporter = std::make_unique<ostream_exporter::OStreamSpanExporter>();
-        auto console_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(console_exporter));
-
-        auto otlp_http_exporter = std::make_unique<otlp_exporter::OtlpHttpExporter>(opts);
-        auto otlp_http_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(otlp_http_exporter));
-
-        std::vector<std::unique_ptr<trace_sdk::SpanProcessor>> processors;
-        processors.emplace_back(std::move(console_processor));
-        processors.emplace_back(std::move(otlp_http_processor));
-        auto multi_processor = std::make_unique<trace_sdk::MultiSpanProcessor>(std::move(processors));
-
-        std::shared_ptr<trace_api::TracerProvider> provider = std::make_shared<trace_sdk::TracerProvider>(std::move(multi_processor));
-        opentelemetry::trace::Provider::SetTracerProvider(provider);
-    }
-
-    void CleanupTracer()
-    {
-        std::shared_ptr<opentelemetry::trace::TracerProvider> none;
-        trace_api::Provider::SetTracerProvider(none);
-    }
-
-}
 
 class GameHandler : public oatpp::web::server::HttpRequestHandler
 {
 public:
     std::shared_ptr<OutgoingResponse> handle(const std::shared_ptr<IncomingRequest> &request) override
     {
-        auto tracer = GetTracer();
+        auto tracer = XTrace::GetTracer();
         auto span = tracer->StartSpan("RollDiceServer");
+        auto scope = tracer->WithActiveSpan(span);
+
         int low = 100;
         int high = 700;
         int random = rand() % (high - low) + low;
@@ -102,8 +49,10 @@ bool Within17Seconds(const std::chrono::time_point<std::chrono::system_clock> &i
 
 void run()
 {
-    auto tracer = GetTracer();
+    auto tracer = XTrace::GetTracer();
     auto span = tracer->StartSpan("Run-Web-Server");
+    auto scope = tracer->WithActiveSpan(span);
+
     auto router = oatpp::web::server::HttpRouter::createShared();
     router->route("GET", "/rolldice", std::make_shared<GameHandler>());
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
@@ -118,23 +67,24 @@ void run()
         return Within17Seconds(startTime);
     };
 
-    server.run();
-    // server.run(fn);
+    // server.run();
+    server.run(fn);
     server.stop();
 }
 
 int mainDiceServer(const opentelemetry::exporter::otlp::OtlpHttpExporterOptions &opts)
 {
     oatpp::base::Environment::init();
-    InitTracer(opts);
-    auto tracer = GetTracer();
-    auto span = tracer->StartSpan("Main-Fn");
+    auto tracer = XTrace::GetTracer();
+    auto span = tracer->StartSpan("Main-DiceServer");
+    auto scope = tracer->WithActiveSpan(span);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(80));
     srand((int)time(0));
     run();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     span->End();
-    CleanupTracer();
     // oatpp::base::Environment::destroy();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
     return 0;
 }

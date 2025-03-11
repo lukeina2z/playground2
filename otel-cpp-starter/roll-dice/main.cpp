@@ -17,7 +17,6 @@
 */
 int main(int argc, char *argv[])
 {
-    namespace otlp = opentelemetry::exporter::otlp;
     opentelemetry::exporter::otlp::OtlpHttpExporterOptions opts;
     if (argc > 1)
     {
@@ -33,7 +32,7 @@ int main(int argc, char *argv[])
             std::string binary_mode = argv[3];
             if (binary_mode.size() >= 3 && binary_mode.substr(0, 3) == "bin")
             {
-                opts.content_type = otlp::HttpRequestContentType::kBinary;
+                opts.content_type = opentelemetry::exporter::otlp::HttpRequestContentType::kBinary;
             }
         }
     }

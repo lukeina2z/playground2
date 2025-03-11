@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/roll-dice/build/debug/dice-server.exe",
+            "args": ["http://.com/v1/traces", "debug"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "externalTerminal"
+        },
+        {
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
@@ -19,7 +30,7 @@
                 "exceptionList": ""
             },
             "sourceFileMap": {
-                "/Users/lukezha/github/otel-cpp-starter/oatpp": "~/github/pg2-cpp/otel-cpp-starter/oatpp"
+                "/Users/lukezha/github/otel-cpp-starter/oatpp": "${workspaceFolder}/oatpp"
             },
             "MIMode": "lldb"
         }

@@ -29,7 +29,10 @@ namespace XTrace
         auto multi_processor = std::make_unique<trace_sdk::MultiSpanProcessor>(std::move(processors));
 
         auto resource_attributes = opentelemetry::sdk::resource::Resource::Create({{"service.name", "Gaming-Service"}});
-        std::shared_ptr<trace_api::TracerProvider> provider = std::make_shared<trace_sdk::TracerProvider>(std::move(multi_processor));
+        std::shared_ptr<trace_api::TracerProvider> provider = std::make_shared<trace_sdk::TracerProvider>(
+            std::move(multi_processor),
+            resource_attributes);
+
         opentelemetry::trace::Provider::SetTracerProvider(provider);
     }
 

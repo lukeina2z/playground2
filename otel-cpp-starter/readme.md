@@ -11,4 +11,6 @@ cmake -B build -G "Visual Studio 17 2022"  -DCMAKE_BUILD_TYPE=Debug ^
 	-DCMAKE_CONFIGURATION_TYPES="Debug;Release" ^
 	-DCMAKE_TOOLCHAIN_FILE="D:/vcpkg-git/scripts/buildsystems/vcpkg.cmake" 
 
+if otel-cpp was re-built, you have to --install it otherwise symboles cannot be found.
+
 cmake --build . --config Debug

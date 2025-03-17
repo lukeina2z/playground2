@@ -1,6 +1,8 @@
 #include "xtrace.h"
 
 #include <opentelemetry/sdk/resource/resource.h>
+#include <opentelemetry/sdk/trace/batch_span_processor.h>
+#include <opentelemetry/sdk/trace/batch_span_processor_options.h>
 
 namespace XTrace
 {
@@ -21,7 +23,12 @@ namespace XTrace
         auto console_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(console_exporter));
 
         auto otlp_http_exporter = std::make_unique<otlp_exporter::OtlpHttpExporter>(opts);
-        auto otlp_http_processor = std::make_unique<trace_sdk::SimpleSpanProcessor>(std::move(otlp_http_exporter));
+        using namespace opentelemetry::sdk::trace;
+        BatchSpanProcessorOptions batchProcOpt;
+        batchProcOpt.schedule_delay_millis = std::chrono::milliseconds(3000);
+        auto otlp_http_processor = std::make_unique<trace_sdk::BatchSpanProcessor>(
+            std::move(otlp_http_exporter),
+            batchProcOpt);
 
         std::vector<std::unique_ptr<trace_sdk::SpanProcessor>> processors;
         processors.emplace_back(std::move(console_processor));

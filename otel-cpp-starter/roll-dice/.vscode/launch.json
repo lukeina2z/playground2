@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) Launch & debug roll-server",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/dice-server",
+            "args": [
+                "http://localhost:4318/v1/traces",
+                // "http://.com/v1/traces",
+                "debug"
+            ],
+            "targetArchitecture": "",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "symbolLoadInfo": {
+                "loadAll": true,
+                "exceptionList": ""
+            },
+
+            "MIMode": "lldb"
+        }
+    ]
+}

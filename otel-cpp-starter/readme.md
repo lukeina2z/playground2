@@ -3,6 +3,11 @@
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 
+Mac
+===
+cmake -B build . -DCMAKE_BUILD_TYPE=Debug
+cmake --build
+
 Windows
 =======
 Refer to otel-cpp repo for how to use vckpg on windows to import packages.

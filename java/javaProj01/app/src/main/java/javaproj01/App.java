@@ -5,7 +5,7 @@ package javaproj01;
 
 public class App {
     public String getGreeting() {
-        return "Hello World!";
+        return "Hello World from App class!";
     }
 
     public static void main(String[] args) {

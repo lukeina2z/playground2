@@ -8,7 +8,7 @@
             "type": "java",
             "request": "launch",
             "name": "Launch Main",
-            "mainClass": "app.src.main.java.javaproj01.stub", // Change to your main class
+            "mainClass": "javaproj01.stub", // Change to your main class
             // "projectName": "javaProj01_a79f52a7", // Optional: only if you have multiple projects
             "args": "",
             "vmArgs": "",

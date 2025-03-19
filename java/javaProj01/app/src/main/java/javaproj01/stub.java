@@ -1,4 +1,4 @@
-package app.src.main.java.javaproj01;
+package javaproj01;
 
 public class stub {
     public static void main(String[] args) {

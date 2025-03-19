@@ -14,13 +14,8 @@
             "vmArgs": "",
             "console": "internalConsole",
             "cwd": "${workspaceFolder}",
-            "stopOnEntry": false
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
+            "stopOnEntry": false,
+            "preLaunchTask": "x-Build with Gradle"
         }
     ]
 }

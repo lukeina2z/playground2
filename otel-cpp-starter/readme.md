@@ -19,3 +19,11 @@ cmake -B build -G "Visual Studio 17 2022"  -DCMAKE_BUILD_TYPE=Debug ^
 if otel-cpp was re-built, you have to --install it otherwise symboles cannot be found.
 
 cmake --build . --config Debug
+
+ docker run --rm --name jaeger ^
+  -p 16686:16686 ^
+  -p 4317:4317 ^
+  -p 4318:4318 ^
+  -p 5778:5778 ^
+  -p 9411:9411 ^
+  jaegertracing/jaeger:2.4.0

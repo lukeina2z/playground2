@@ -2,6 +2,7 @@
 #include <string>
 
 #include "opentelemetry/exporters/otlp/otlp_http_exporter_options.h"
+#include "opentelemetry/trace/context.h"
 
 #include "DiceServer.h"
 #include "xtrace.h"
@@ -45,7 +46,9 @@ int main(int argc, char *argv[])
     XTrace::InitTracer(opts);
     auto tracer = XTrace::GetTracer();
     auto span = tracer->StartSpan("Main-Fn");
-    auto scope = tracer->WithActiveSpan(span);
+    
+    // auto scope = tracer->WithActiveSpan(span);
+    opentelemetry::v1::trace::Scope scope(span);
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
     mainDiceServer(opts);

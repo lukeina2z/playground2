@@ -12,3 +12,5 @@ plugins {
 
 rootProject.name = 'proj02'
 include('app')
+include 'otelSdkEnabler'
+

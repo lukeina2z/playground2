@@ -10,6 +10,16 @@ repositories {
 }
 
 dependencies {
+    implementation(platform("io.opentelemetry:opentelemetry-bom:1.48.0"))
+    implementation("io.opentelemetry:opentelemetry-exporter-common")
+    implementation("io.opentelemetry:opentelemetry-exporter-logging")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp-common")
+    implementation("io.opentelemetry:opentelemetry-sdk")
+
+
+
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }

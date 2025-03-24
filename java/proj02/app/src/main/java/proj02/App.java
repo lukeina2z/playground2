@@ -18,6 +18,8 @@ import io.opentelemetry.context.Scope;
 //import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 //import io.opentelemetry.exporter.logging.LoggingSpanExporter;
 
+import xTel.OTelEnabler;
+
 public class App {
     public String getGreeting() {
         return "Hello World from project 02!";
@@ -27,6 +29,9 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+
+        var xtel = new OTelEnabler();
+        var oTelApi = xtel.initializeOpenTelemetry();
 
         System.out.println("Starting OpenTelemetry API-only application...");
         tracer = GlobalOpenTelemetry.getTracer("my-app-proj02");

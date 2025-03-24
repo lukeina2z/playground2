@@ -1,5 +1,7 @@
 package xTel;
 
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
@@ -30,12 +32,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OTelEnabler {
-  public OpenTelemetry initializeOpenTelemetry() {
 
-    OtlpHttpSpanExporterBuilder httpBuilder = OtlpHttpSpanExporter.builder();
-    httpBuilder.setEndpoint("http://localhost:4318/v1/traces");
+  private final String svcName;
+
+  public OTelEnabler(String serviceName) {
+    this.svcName = serviceName;
+  }
+
+  public OpenTelemetry initializeOpenTelemetry() {
+    Resource resource = Resource.getDefault().merge(
+        Resource.create(Attributes.of(AttributeKey.stringKey("service.name"), svcName)));
+
+    OtlpHttpSpanExporterBuilder httpBuilder = OtlpHttpSpanExporter.builder()
+        .setEndpoint("http://localhost:4318/v1/traces");
 
     SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+        .setResource(resource)
         .addSpanProcessor(SimpleSpanProcessor.create(LoggingSpanExporter.create()))
         .addSpanProcessor(SimpleSpanProcessor.create(httpBuilder.build()))
         .setSampler(Sampler.alwaysOn()) // Enables tracing for all requests

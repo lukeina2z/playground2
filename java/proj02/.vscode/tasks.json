@@ -4,7 +4,7 @@
 		{
 			"label": "x-Build with Gradle",
 			"type": "shell",
-			"command": "./gradlew",
+			"command": "gradlew",
 			"args": [
 					"build"
 			],

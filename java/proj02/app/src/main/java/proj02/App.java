@@ -30,7 +30,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
 
-        var xtel = new OTelEnabler();
+        var xtel = new OTelEnabler("Java-App-Proj02");
         var oTelApi = xtel.initializeOpenTelemetry();
 
         System.out.println("Starting OpenTelemetry API-only application...");
@@ -46,6 +46,11 @@ public class App {
             parentSpan.end(); // End the parent span
         }
 
+        try {
+            Thread.sleep(3000); // Sleep for 3000 milliseconds (3 seconds)
+        } catch (InterruptedException e) {
+            e.printStackTrace(); // Handle interruption properly
+        }
         System.out.println("Application finished execution.");
     }
 
